@@ -8,6 +8,7 @@ import androidx.compose.runtime.getValue
 import androidx.navigation.compose.rememberNavController
 import com.example.tripapplication.auth.presentation.auth_screen.AuthViewModel
 import com.example.tripapplication.auth.presentation.auth_screen.OnBoardingScreen
+import com.example.tripapplication.auth.presentation.login.LoginScreen
 import org.koin.androidx.compose.koinViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -23,7 +24,8 @@ class MainActivity : ComponentActivity() {
             val navController = rememberNavController()
             val viewModel = koinViewModel<AuthViewModel>()
             val authState by viewModel.authState.collectAsState()
-            OnBoardingScreen()
+//            OnBoardingScreen()
+            LoginScreen()
 
 //            NavHost(
 //                navController = navController,
