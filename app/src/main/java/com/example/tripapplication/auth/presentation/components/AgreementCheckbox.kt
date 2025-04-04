@@ -63,7 +63,7 @@ fun AgreementCheckbox(checked : Boolean, onCheckedChange : (Boolean) -> Unit) {
                 withStyle(
                     style = SpanStyle(
                         fontStyle = MaterialTheme.typography.bodyMedium.fontStyle,
-                        fontWeight = FontWeight.Normal,
+                        fontWeight = FontWeight.SemiBold,
                         color = Color.Black
                     )
 
@@ -74,7 +74,7 @@ fun AgreementCheckbox(checked : Boolean, onCheckedChange : (Boolean) -> Unit) {
                 withStyle(
                     style = SpanStyle(
                         fontStyle = MaterialTheme.typography.bodyMedium.fontStyle,
-                        fontWeight = FontWeight.Normal,
+                        fontWeight = FontWeight.SemiBold,
                         color = Color.Black
                     )
 

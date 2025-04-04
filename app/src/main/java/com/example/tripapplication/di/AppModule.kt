@@ -10,7 +10,7 @@ import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
 val appModule = module {
-    single { HttpClientFactory.create(engine = CIO.create()) }
+    single { HttpClientFactory.create(engine = CIO.create(), get()) }
 
     // Remote
     single { AuthDataStore(get()) }

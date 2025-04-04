@@ -2,12 +2,14 @@ package com.example.tripapplication.core.navigation
 
 import android.widget.Toast
 import androidx.compose.foundation.layout.Box
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.platform.LocalContext
@@ -106,10 +108,9 @@ fun NavigationGraph(
     LoadingOverlay(isLoading = authState.value.isLoading){
         NavHost(
             navController = navController,
-            startDestination = Screen.OnBoardingScreen.route,
+            startDestination = if (authState.value.accessToken != null) Screen.HomeScreen.route else Screen.OnBoardingScreen.route,
             modifier = modifier
         ) {
-
             composable(route = Screen.OnBoardingScreen.route) {
                 OnBoardingScreen(
                     navigateToLogin = {
@@ -215,6 +216,13 @@ fun NavigationGraph(
                         authViewModel.onAction(it)
                     }
                 )
+            }
+
+            composable(Screen.HomeScreen.route) {
+                Box(modifier = modifier, contentAlignment = Alignment.Center) {
+                    Text(text = "Home Screen")
+                    Text(authState.toString())
+                }
             }
         }
     }

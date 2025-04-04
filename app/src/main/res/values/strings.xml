@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Trip Application</string>
+    <string name="app_name">Traventure</string>
 
 
     <string name="error_request_timeout">The request timed out.</string>

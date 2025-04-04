@@ -29,8 +29,7 @@ fun OnBoardingScreen(
         // Add padding to the top of the logo to ensure proper spacing
         Image(
             modifier = Modifier
-                .size(140.dp)
-                .padding(top = 16.dp),
+                .size(140.dp),
             painter = painterResource(id = R.drawable.logo),
             contentDescription = "APP LOGO"
         )
@@ -51,7 +50,7 @@ fun OnBoardingScreen(
         // The button at the bottom with some padding
         GetStartedButton(
             onClick = { navigateToLogin() },
-            modifier = Modifier.padding(bottom = 24.dp)
+            modifier = Modifier.padding(bottom = 12.dp)
         )
     }
 }

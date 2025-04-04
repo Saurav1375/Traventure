@@ -60,7 +60,7 @@ fun AutoAdvancePager(
                     contentDescription = null,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(380.dp) // Slightly reduced height to avoid spacing issues
+                        .height(360.dp) // Slightly reduced height to avoid spacing issues
                 )
 
                 TravelAppHeader(
@@ -68,7 +68,7 @@ fun AutoAdvancePager(
                     "Perfectly Planned",
                     "Effortlessly create and organize your dream trips. Start exploring now!"
                 )
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(2.dp))
                 PagerIndicator(pageItems.size, pagerState.currentPage)
             }
         }
