@@ -177,7 +177,7 @@ class AuthViewModel(
                 }.onError { error ->
                     _event.send(AuthEvent.Error(error.name))
                 }
-
+            _state.update { it.copy(isLoading = false) }
 
         }
     }
