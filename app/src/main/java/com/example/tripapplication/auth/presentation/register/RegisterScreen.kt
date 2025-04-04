@@ -1,12 +1,9 @@
-package com.example.tripapplication.auth.presentation.login
+package com.example.tripapplication.auth.presentation.register
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -30,28 +27,30 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
-import com.example.tripapplication.R
+import com.example.tripapplication.auth.presentation.components.AgreementCheckbox
 import com.example.tripapplication.auth.presentation.components.InputField
 import com.example.tripapplication.auth.presentation.components.LogoComponent
 import com.example.tripapplication.auth.presentation.components.PrimaryButton
-import com.example.tripapplication.auth.presentation.components.SocialSignInButton
+import com.example.tripapplication.auth.presentation.login.AuthAction
+import com.example.tripapplication.auth.presentation.login.AuthState
 import com.example.tripapplication.auth.presentation.utils.isValidEmail
 import com.example.tripapplication.auth.presentation.utils.isValidPassword
 
 @Composable
-fun LoginScreen(
+fun RegisterScreen(
     state: AuthState,
-    navigateToRegister: () -> Unit,
-    navigateToForgetPass : () -> Unit,
+    navigateToLogin: () -> Unit,
     onAction: (AuthAction) -> Unit
 ) {
     val black = Color.Black
+    var checkPrivacyPolicy by remember { mutableStateOf(false) }
     var passwordVisible by remember { mutableStateOf(false) }
-    val isEnabled = isValidEmail(state.loginRequest.email) &&
-                    isValidPassword(state.loginRequest.password)
+    val isEnabled = checkPrivacyPolicy &&
+                    state.registerRequest.firstname.isNotEmpty() &&
+                    isValidEmail(state.registerRequest.email) &&
+                    isValidPassword(state.registerRequest.password)
 
 
 
@@ -70,11 +69,11 @@ fun LoginScreen(
             // Logo
             LogoComponent()
 
-            Spacer(modifier = Modifier.height(28.dp))
+            Spacer(modifier = Modifier.height(10.dp))
 
             // Title
             Text(
-                text = "Sign in to your account",
+                text = "Create new account",
                 style = MaterialTheme.typography.headlineLarge.copy(
                     fontWeight = FontWeight.SemiBold
                 ),
@@ -83,16 +82,32 @@ fun LoginScreen(
 
             Spacer(modifier = Modifier.height(32.dp))
 
+            InputField(
+                text = state.registerRequest.firstname,
+                label = "Name",
+                errorText = "Can not be empty",
+                validator = {
+                    it.isNotEmpty()
+                },
+                placeholder = "Enter your name",
+                isPassword = false,
+                onValueChange = {
+                    onAction(AuthAction.OnRegisterNameChange(it))
+                }
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
             // Email field
             InputField(
-                text = state.loginRequest.email,
+                text = state.registerRequest.email,
                 label = "Email Address",
                 errorText = "Invalid email address",
                 validator = ::isValidEmail,
                 placeholder = "Enter your email address",
                 isPassword = false,
                 onValueChange = {
-                    onAction(AuthAction.OnLoginEmailChange(it))
+                    onAction(AuthAction.OnRegisterEmailChange(it))
                 }
             )
 
@@ -100,7 +115,7 @@ fun LoginScreen(
 
             // Password field
             InputField(
-                text = state.loginRequest.password,
+                text = state.registerRequest.password,
                 label = "Password",
                 errorText = "Password must be at least 8 characters long",
                 validator = ::isValidPassword,
@@ -116,74 +131,36 @@ fun LoginScreen(
                     }
                 },
                 onValueChange = {
-                    onAction(AuthAction.OnLoginPasswordChange(it))
+                    onAction(AuthAction.OnRegisterPasswordChange(it))
                 }
             )
 
-            // Forgot password
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 8.dp),
-                contentAlignment = Alignment.CenterEnd
-            ) {
-                Text(
-                    modifier = Modifier.clickable(
-                        indication = null, // disables ripple
-                        interactionSource = remember { MutableInteractionSource() } ,
-                        onClick = { navigateToForgetPass() }
-                    ) ,
-                    text = "Forgot password?",
-                    style = MaterialTheme.typography.bodyMedium.copy(
-                        fontWeight = FontWeight.SemiBold
-                    ),
-                    color = Color.Gray,
-                    textDecoration = TextDecoration.None
-                )
-            }
+            // User agreement checkbox
+            AgreementCheckbox(
+                checked = checkPrivacyPolicy,
+                onCheckedChange = {
+                    checkPrivacyPolicy = it
+                }
+            )
 
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(8.dp))
 
             // Sign in button
             PrimaryButton(
-                text = "Sign in",
+                text = "Sign Up",
                 enabled = isEnabled,
-                onClick = { onAction(AuthAction.Login) }
+                onClick = { onAction(AuthAction.Register) }
             )
 
-            Spacer(modifier = Modifier.height(16.dp))
 
-            // Alternative sign-in options
-            Text(
-                text = "other way to sign in",
-                style = MaterialTheme.typography.bodyMedium,
-                color = Color.Gray
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // Social sign-in options
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                SocialSignInButton(
-                    icon = R.drawable._icon__google_,
-                    contentDescription = "Sign in with Google"
-                )
-            }
             Spacer(modifier = Modifier.height(8.dp))
             Text(
                 modifier = Modifier
-                    .clickable(
-                        indication = null, // disables ripple
-                        interactionSource = remember { MutableInteractionSource() } ,
-                    ) {
-                        navigateToRegister()
+                    .clickable {
+                        navigateToLogin()
                     },
                 text = buildAnnotatedString {
-                    append("New to us? ")
+                    append("Already Registered? ")
                     withStyle(
                         style = SpanStyle(
                             fontWeight = FontWeight.SemiBold,
@@ -191,7 +168,7 @@ fun LoginScreen(
                         )
 
                     ) {
-                        append("Register")
+                        append("Login")
                     }
                 },
                 color = Color.Black,

@@ -2,7 +2,6 @@ package com.example.tripapplication.core.data.networking
 
 import android.util.Log
 import com.example.tripapplication.auth.data.local.AuthDataStore
-import com.example.tripapplication.auth.domain.AuthService
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.HttpClientEngine
 import io.ktor.client.plugins.auth.Auth
@@ -21,7 +20,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.serialization.json.Json
 
 object HttpClientFactory {
-    fun create(engine: HttpClientEngine, authService: AuthService): HttpClient {
+    fun create(engine: HttpClientEngine): HttpClient {
         return HttpClient(engine) {
             install(Logging) {
                 level = LogLevel.ALL
@@ -37,28 +36,28 @@ object HttpClientFactory {
             }
             install(Auth) {
                 bearer {
-                    loadTokens {
-                        val accessToken = authService.getAuthState().first().accessToken
-                        val refreshToken = authService.getAuthState().first().refreshToken
-                        BearerTokens(accessToken ?: "", refreshToken ?: "")
-                    }
+//                    loadTokens {
+//                        val accessToken = authService.getAuthState().first().accessToken
+//                        val refreshToken = authService.getAuthState().first().refreshToken
+//                        BearerTokens(accessToken ?: "", refreshToken ?: "")
+//                    }
 
-                    refreshTokens {
-                        try {
-                            authService.refreshTokens()
-                            BearerTokens(
-                                accessToken = authService.getAuthState().first().accessToken ?: "",
-                                refreshToken = authService.getAuthState().first().refreshToken ?: ""
-                            )
-
-
-                        } catch (e: Exception) {
-                            Log.d("TAG", "Login: ${e.message}")
-                            //todo() redirect to logout
-                            null
-                        }
-
-                    }
+//                    refreshTokens {
+//                        try {
+//                            authService.refreshTokens()
+//                            BearerTokens(
+//                                accessToken = authService.getAuthState().first().accessToken ?: "",
+//                                refreshToken = authService.getAuthState().first().refreshToken ?: ""
+//                            )
+//
+//
+//                        } catch (e: Exception) {
+//                            Log.d("TAG", "Login: ${e.message}")
+//                            //todo() redirect to logout
+//                            null
+//                        }
+//
+//                    }
                 }
 
             }

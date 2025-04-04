@@ -1,4 +1,4 @@
-package com.example.tripapplication.auth.presentation.auth_screen.components
+package com.example.tripapplication.auth.presentation.onboarding.components
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding

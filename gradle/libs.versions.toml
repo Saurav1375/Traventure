@@ -4,6 +4,7 @@ androidSdk = "11.8.5"
 appauth = "0.11.1"
 browser = "1.8.0"
 coilCompose = "2.4.0"
+dotlottieAndroid = "0.6.1"
 kotlin = "2.0.0"
 coreKtx = "1.15.0"
 junit = "4.13.2"
@@ -17,7 +18,6 @@ ktor = "2.3.12"
 koin = "3.5.6"
 material3-adaptive = "1.0.0"
 compose-material-icons-extended = "1.7.2"
-coil = "3.1.0"
 datastore = "1.0.0"
 navigation = "2.8.5"
 uiTextGoogleFonts = "1.7.8"
@@ -29,6 +29,7 @@ androidx-browser = { module = "androidx.browser:browser", version.ref = "browser
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 appauth = { module = "net.openid:appauth", version.ref = "appauth" }
 coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coilCompose" }
+dotlottie-android = { module = "com.github.LottieFiles:dotlottie-android", version.ref = "dotlottieAndroid" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }

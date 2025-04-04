@@ -1,8 +1,6 @@
-package com.example.tripapplication.auth.presentation.auth_screen.components
+package com.example.tripapplication.auth.presentation.onboarding.components
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.LocalIndication
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsDraggedAsState
 import androidx.compose.foundation.interaction.collectIsPressedAsState

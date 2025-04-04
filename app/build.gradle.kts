@@ -27,7 +27,7 @@ android {
 
     buildTypes {
         debug {
-            buildConfigField("String", "BASE_URL", "\"https://ecommerce-1mfu.onrender.com/api/v1/\"")
+            buildConfigField("String", "BASE_URL", "\"http://10.50.47.139:8030/api/v1/\"")
 
         }
         release {
@@ -36,7 +36,7 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            buildConfigField("String", "BASE_URL", "\"https://ecommerce-1mfu.onrender.com/api/v1/\"")
+            buildConfigField("String", "BASE_URL", "\"http://10.50.47.139:8030/api/v1/\"")
 
 
         }
@@ -60,6 +60,7 @@ fun getApiKey(name : String): String {
     return properties.getProperty(name) ?: ""
 }
 
+
 dependencies {
 
     implementation(libs.bundles.compose)
@@ -73,6 +74,7 @@ dependencies {
     implementation(libs.bundles.data.store)
     implementation(libs.appauth)
     implementation(libs.androidx.browser)
+    implementation(libs.dotlottie.android)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

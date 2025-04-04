@@ -31,12 +31,14 @@ import com.example.tripapplication.auth.presentation.utils.isValidEmail
 
 @Composable
 fun InputField(
+    text: String = "",
     label: String,
     errorText: String,
     placeholder: String,
     isPassword: Boolean = false,
     validator: (String) -> Boolean = { true },
-    trailingIcon: @Composable (() -> Unit)? = null
+    trailingIcon: @Composable (() -> Unit)? = null,
+    onValueChange: (String) -> Unit = {}
 ) {
     var showError by remember { mutableStateOf(false) }
     Column(
@@ -47,7 +49,7 @@ fun InputField(
             style = MaterialTheme.typography.bodyMedium.copy(
                 fontWeight = FontWeight.SemiBold
             ),
-            modifier = Modifier.padding(bottom = 8.dp)
+            modifier = Modifier.padding(bottom = if (showError) 2.dp else 8.dp)
         )
         if (showError) {
             Spacer(modifier = Modifier.height(2.dp))
@@ -73,14 +75,13 @@ fun InputField(
         }
 
 
-        var text by remember { mutableStateOf("") }
 
         OutlinedTextField(
             value = text,
             onValueChange = {
-                text = it
-                if (text.isEmpty()) showError = false
-                else showError = !validator(it)
+                onValueChange(it)
+                showError = if (text.isEmpty() || text.isBlank()) false
+                else !validator(it)
             },
             placeholder = {
                 Text(

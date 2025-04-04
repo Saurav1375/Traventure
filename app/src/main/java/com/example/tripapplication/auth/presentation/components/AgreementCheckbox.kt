@@ -1,6 +1,9 @@
 package com.example.tripapplication.auth.presentation.components
 
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -16,6 +19,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -23,10 +27,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat.startActivity
+import com.example.tripapplication.core.data.networking.constructUrl
 
 @Composable
 fun AgreementCheckbox(checked : Boolean, onCheckedChange : (Boolean) -> Unit) {
-
+    val context = LocalContext.current
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -44,7 +50,14 @@ fun AgreementCheckbox(checked : Boolean, onCheckedChange : (Boolean) -> Unit) {
         )
         Text(
             modifier = Modifier
-                .clickable { },
+                .clickable(
+                    indication = null,
+                    interactionSource = remember { MutableInteractionSource() }
+                ) {
+                    val url = constructUrl("policy.html")
+                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                    context.startActivity(intent)
+                },
             text = buildAnnotatedString {
                 append("I've read and agreed to ")
                 withStyle(

@@ -20,7 +20,7 @@ fun LogoComponent() {
         Image(
             painter = painterResource(id = R.drawable.logo),
             contentDescription = "PlantShop Logo",
-            modifier = Modifier.size(180.dp)
+            modifier = Modifier.size(120.dp)
         )
         
 

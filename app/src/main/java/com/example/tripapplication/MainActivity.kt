@@ -3,29 +3,32 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Scaffold
+import androidx.compose.ui.Modifier
 import androidx.navigation.compose.rememberNavController
-import com.example.tripapplication.auth.presentation.auth_screen.AuthViewModel
-import com.example.tripapplication.auth.presentation.auth_screen.OnBoardingScreen
 import com.example.tripapplication.auth.presentation.login.LoginScreen
-import org.koin.androidx.compose.koinViewModel
-import org.koin.androidx.viewmodel.ext.android.viewModel
+import com.example.tripapplication.core.navigation.NavigationGraph
 
 class MainActivity : ComponentActivity() {
 
-    private val authViewModel: AuthViewModel by viewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
         setContent {
-            val navController = rememberNavController()
-            val viewModel = koinViewModel<AuthViewModel>()
-            val authState by viewModel.authState.collectAsState()
-//            OnBoardingScreen()
-            LoginScreen()
+            Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+
+                val navController = rememberNavController()
+                NavigationGraph(
+                    navController = navController,
+                    modifier = Modifier.padding(innerPadding)
+
+                )
+            }
+
 
 //            NavHost(
 //                navController = navController,
@@ -56,20 +59,4 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-//    override fun onNewIntent(intent: Intent) {
-//        super.onNewIntent(intent)
-//        handleAuthorizationResponse(intent)
-//    }
-//
-//    private fun handleAuthorizationResponse(intent: Intent) {
-//        val response = AuthorizationResponse.fromIntent(intent)
-//        val exception = AuthorizationException.fromIntent(intent)
-//
-//        if (response != null) {
-//            Log.d("MainActivity", "Received auth response, processing...")
-//            authViewModel.processAuthResponse(response)
-//        } else if (exception != null) {
-//            Log.e("MainActivity", "Auth error: ${exception.error} - ${exception.errorDescription}")
-//        }
-//    }
 }

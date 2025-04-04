@@ -1,5 +1,6 @@
 package com.example.tripapplication.auth.presentation.utils
 
+import android.annotation.SuppressLint
 import java.util.regex.Pattern
 
 fun isValidEmail(email: String?): Boolean {
@@ -10,5 +11,12 @@ fun isValidEmail(email: String?): Boolean {
 
 // Function to check if a password is at least 6 characters long
 fun isValidPassword(password: String?): Boolean {
-    return password != null && password.length >= 6
+    return password != null && password.length >= 8
+}
+
+@SuppressLint("DefaultLocale")
+fun formatTimeForResendTImer(seconds: Int): String {
+    val minutes = seconds / 60
+    val remainingSeconds = seconds % 60
+    return String.format("%02d:%02d", minutes, remainingSeconds)
 }
