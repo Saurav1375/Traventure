@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.outlined.Email
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -13,6 +12,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -21,7 +21,10 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 
 @Composable
-fun PasswordRecoveryDialog(
+fun CustomAlertDialog(
+    title : String = "Check your email",
+    description : String = "We have sent password recovery instruction to your email",
+    icon : ImageVector = Icons.Outlined.Email,
     onDismissRequest: () -> Unit
 ) {
     Dialog(
@@ -58,7 +61,7 @@ fun PasswordRecoveryDialog(
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(
-                        imageVector = Icons.Outlined.Email,
+                        imageVector = icon,
                         contentDescription = "Email Icon",
                         tint = Color.White,
                         modifier = Modifier.size(32.dp)
@@ -69,7 +72,7 @@ fun PasswordRecoveryDialog(
                 
                 // Check your email text
                 Text(
-                    text = "Check your email",
+                    text = title,
                     style = MaterialTheme.typography.titleLarge,
                     fontWeight = FontWeight.Bold
                 )
@@ -78,7 +81,7 @@ fun PasswordRecoveryDialog(
                 
                 // Email sent message
                 Text(
-                    text = "We have sent password recovery instruction to your email",
+                    text = description,
                     style = MaterialTheme.typography.bodyMedium,
                     textAlign = TextAlign.Center,
                     color = Color.Gray
@@ -98,7 +101,7 @@ fun PasswordRecoveryDialogPreview() {
                 .background(Color.LightGray.copy(alpha = 0.5f)),
             contentAlignment = Alignment.Center
         ) {
-            PasswordRecoveryDialog(
+            CustomAlertDialog(
                 onDismissRequest = {}
             )
         }

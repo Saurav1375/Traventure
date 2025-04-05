@@ -2,6 +2,8 @@ package com.example.tripapplication.core.navigation
 
 import android.widget.Toast
 import androidx.compose.foundation.layout.Box
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.AccountCircle
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -21,7 +23,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.tripapplication.auth.presentation.activate.ActivateScreen
 import com.example.tripapplication.auth.presentation.forgetpass.ForgetPasswordScreen
-import com.example.tripapplication.auth.presentation.forgetpass.components.PasswordRecoveryDialog
+import com.example.tripapplication.auth.presentation.forgetpass.components.CustomAlertDialog
 import com.example.tripapplication.auth.presentation.login.AuthAction
 import com.example.tripapplication.auth.presentation.login.AuthEvent
 import com.example.tripapplication.auth.presentation.login.AuthViewModel
@@ -30,6 +32,7 @@ import com.example.tripapplication.auth.presentation.onboarding.OnBoardingScreen
 import com.example.tripapplication.auth.presentation.register.RegisterScreen
 import com.example.tripapplication.core.presentation.components.LoadingOverlay
 import com.example.tripapplication.core.presentation.util.ObserveAsEvents
+import kotlinx.coroutines.delay
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -41,6 +44,7 @@ fun NavigationGraph(
     val authViewModel = koinViewModel<AuthViewModel>()
     val authState = authViewModel.state.collectAsStateWithLifecycle()
     var showPasswordResetDialogue by remember { mutableStateOf(false) }
+    var showAccountActivatedDialogue by  remember { mutableStateOf(false) }
     LaunchedEffect(authState.value.email) {
         if (authState.value.email != null && !authState.value.isActivated) {
             navController.navigate(Screen.ActivateAccountScreen.route) {
@@ -49,6 +53,19 @@ fun NavigationGraph(
                 }
             }
         }
+    }
+
+    if (showAccountActivatedDialogue) {
+        LaunchedEffect(Unit) {
+            delay(2000)
+            showAccountActivatedDialogue = false
+        }
+        CustomAlertDialog(
+            onDismissRequest = { showAccountActivatedDialogue = false },
+            title = "Account Activated Successfully",
+            description = "Your Account is activated You can now login to your account",
+            icon = Icons.Outlined.AccountCircle
+        )
     }
     ObserveAsEvents(events = authViewModel.event) { event ->
         when (event) {
@@ -80,6 +97,7 @@ fun NavigationGraph(
                 }
             }
             AuthEvent.ActivationSuccess -> {
+                showAccountActivatedDialogue = true
                 Toast.makeText(
                     context,
                     "Activation Success",
@@ -202,13 +220,7 @@ fun NavigationGraph(
 
             composable(Screen.ForgetPasswordScreen.route) {
                 if (showPasswordResetDialogue) {
-                    PasswordRecoveryDialog(
-                        onDismissRequest = {
-                            showPasswordResetDialogue = false
-                        }
-                    )
-
-
+                    CustomAlertDialog(onDismissRequest = { showPasswordResetDialogue = false })
                 }
                 ForgetPasswordScreen(
                     state = authState.value,
