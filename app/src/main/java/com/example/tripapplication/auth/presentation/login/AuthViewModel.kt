@@ -4,7 +4,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.tripapplication.auth.domain.AuthService
 import com.example.tripapplication.auth.domain.RegisterRequest
+import com.example.tripapplication.auth.domain.utils.BusinessError
 import com.example.tripapplication.auth.domain.utils.LoginRequest
+import com.example.tripapplication.core.domain.util.AppError
 import com.example.tripapplication.core.domain.util.onError
 import com.example.tripapplication.core.domain.util.onSuccess
 import kotlinx.coroutines.channels.Channel
@@ -18,7 +20,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class AuthViewModel(
-    private val authService: AuthService
+    private val authService: AuthService,
 ) : ViewModel() {
 
     private var hasLoadedInitialData = false
@@ -91,7 +93,7 @@ class AuthViewModel(
     private fun loadAuthState() {
         viewModelScope.launch {
             _state.update {
-                it.copy(isLoading = true)
+                it.copy(isLoading = false)
             }
             authService.getAuthState().collect { authState ->
                 _state.update {
@@ -114,10 +116,16 @@ class AuthViewModel(
             authService.login(_login.value)
                 .onSuccess { authResponse ->
                     _event.send(AuthEvent.LoginSuccess)
+                    _state.update { it.copy(isLoading = false) }
                 }.onError { error ->
-                    _event.send(AuthEvent.Error(error.name))
+                    if (error is AppError.Business && error.error == BusinessError.ACCOUNT_NOT_VERIFIED) {
+                        _state.update { it.copy(email = _login.value.email) }
+                        resendCode()
+                    }
+                    _event.send(AuthEvent.Error(error))
+                    _state.update { it.copy(isLoading = false) }
                 }
-            _state.update { it.copy(isLoading = false) }
+
         }
     }
 
@@ -129,7 +137,7 @@ class AuthViewModel(
                     _event.send(AuthEvent.RegisterSuccess)
                 }
                 .onError { error ->
-                    _event.send(AuthEvent.Error(error.name))
+                    _event.send(AuthEvent.Error(error))
                 }
             _state.update { it.copy(isLoading = false) }
         }
@@ -138,17 +146,23 @@ class AuthViewModel(
     private fun activateAccount(code: String) {
         viewModelScope.launch {
             _state.update { it.copy(isLoading = true) }
-            authService.activateAccount(code)
+            val email = _state.value.email ?: _login.value.email.ifEmpty { _register.value.email }
+            authService.activateAccount(code, email)
                 .onSuccess {
                     _event.send(AuthEvent.ActivationSuccess)
                 }
                 .onError { error ->
-                    _event.send(AuthEvent.Error(error.name))
+                    _event.send(AuthEvent.Error(error))
+
                 }
-            _state.update { it.copy(isLoading = false) }
         }
-
-
+        _state.update {
+            it.copy(
+                isLoading = false,
+                focusedIndex = null,
+                code = (1..4).map { null }
+            )
+        }
     }
 
     private fun resendCode() {
@@ -160,7 +174,7 @@ class AuthViewModel(
                         _event.send(AuthEvent.ResendCodeSuccess)
                     }
                     .onError { error ->
-                        _event.send(AuthEvent.Error(error.name))
+                        _event.send(AuthEvent.Error(error))
                     }
             }
             _state.update { it.copy(isLoading = false) }
@@ -172,11 +186,11 @@ class AuthViewModel(
     private fun forgetPassword() {
         viewModelScope.launch {
             _state.update { it.copy(isLoading = true) }
-                authService.forgetPassword(_login.value.email).onSuccess {
-                    _event.send(AuthEvent.ForgetPassSuccess)
-                }.onError { error ->
-                    _event.send(AuthEvent.Error(error.name))
-                }
+            authService.forgetPassword(_login.value.email).onSuccess {
+                _event.send(AuthEvent.ForgetPassSuccess)
+            }.onError { error ->
+                _event.send(AuthEvent.Error(error))
+            }
             _state.update { it.copy(isLoading = false) }
 
         }

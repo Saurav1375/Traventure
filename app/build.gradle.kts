@@ -27,7 +27,7 @@ android {
 
     buildTypes {
         debug {
-            buildConfigField("String", "BASE_URL", "\"http://10.50.47.139:8030/api/v1/\"")
+            buildConfigField("String", "BASE_URL", "\"https://adequate-margo-saurav5575-1fabb40e.koyeb.app/api/v1/\"")
 
         }
         release {
@@ -36,7 +36,7 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            buildConfigField("String", "BASE_URL", "\"http://10.50.47.139:8030/api/v1/\"")
+            buildConfigField("String", "BASE_URL", "\"http://adequate-margo-saurav5575-1fabb40e.koyeb.app/api/v1/\"")
 
 
         }

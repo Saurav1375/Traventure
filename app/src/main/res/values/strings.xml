@@ -1,11 +1,27 @@
 <resources>
     <string name="app_name">Traventure</string>
 
+    <!-- Network Error Messages -->
+    <string name="error_request_timeout">Request timed out. Please try again.</string>
+    <string name="error_too_many_requests">You\'ve made too many requests. Please try again later.</string>
+    <string name="error_no_internet">No internet connection. Please check your network settings.</string>
+    <string name="error_server">The server encountered an error. Please try again later.</string>
+    <string name="error_serialization">Could not process the server\'s response. Please try again.</string>
+    <string name="error_unknown">Something went wrong. Please try again.</string>
 
-    <string name="error_request_timeout">The request timed out.</string>
-    <string name="error_too_many_requests">Oops, it seems like your quota is exceeded.</string>
-    <string name="error_no_internet">Couldn\'t connect to server, please check your internet connection.</string>
-    <string name="error_unknown">Something went wrong. Please try again later.</string>
-    <string name="error_serialization">Couldn\'t serialize or deserialize data.</string>
+    <!-- Business Error Messages -->
+    <string name="error_authentication_failed">Authentication failed. Please try again.</string>
+    <string name="error_bad_credentials">Incorrect email or password.</string>
+    <string name="error_user_not_found">No account found with these credentials.</string>
+    <string name="error_email_already_registered">An account with this email already exists.</string>
+    <string name="error_account_locked">Your account is temporarily locked. Please try again later or contact support.</string>
+    <string name="error_account_disabled">Your account has been disabled. Please contact support.</string>
+    <string name="error_session_expired">Activation Code has expired. A new code has been sent</string>
+    <string name="error_invalid_token">Invalid Activation Code.</string>
+    <string name="error_weak_password">Password must be at least 8 characters long and include uppercase, lowercase, digits, and special characters.</string>
+    <string name="error_passwords_dont_match">Passwords don\'t match.</string>
+    <string name="error_account_not_verified">Please verify your email address. Check your inbox for a verification code.</string>
+    <string name="error_unauthorized">You don\'t have permission to perform this action.</string>
+
 
 </resources>

@@ -11,6 +11,7 @@ import com.example.tripapplication.auth.domain.AuthResponse
 import com.example.tripapplication.auth.domain.utils.LoginRequest
 import com.example.tripapplication.core.data.networking.constructUrl
 import com.example.tripapplication.core.data.networking.safeCall
+import com.example.tripapplication.core.domain.util.AppError
 import com.example.tripapplication.core.domain.util.NetworkError
 import io.ktor.client.HttpClient
 import io.ktor.client.request.get
@@ -32,7 +33,7 @@ class AuthServiceImpl(
         authDataStore.saveAuthState(authResponse)
 
     override suspend fun clearAuthState() = authDataStore.clearAuthState()
-    override suspend fun register(request: RegisterRequest): Result<Unit, NetworkError> {
+    override suspend fun register(request: RegisterRequest): Result<Unit, AppError> {
         val fullName = request.firstname.trimEnd()
         val formattedRequest = RegisterRequest(
             firstname = fullName.split(" ").first(),
@@ -54,7 +55,7 @@ class AuthServiceImpl(
 
     override suspend fun login(
         request: LoginRequest
-    ): Result<AuthResponse, NetworkError> {
+    ): Result<AuthResponse, AppError> {
         return safeCall<TokenResponseDto> {
             httpClient.post(constructUrl("/auth/authenticate")) {
                 contentType(ContentType.Application.Json)
@@ -67,7 +68,7 @@ class AuthServiceImpl(
         }
     }
 
-    override suspend fun refreshToken(refreshToken: String): Result<AuthResponse, NetworkError> {
+    override suspend fun refreshToken(refreshToken: String): Result<AuthResponse, AppError> {
         return safeCall<TokenResponseDto> {
             httpClient.post(constructUrl("/auth/refresh-token")) {
                 contentType(ContentType.Application.Json)
@@ -75,12 +76,13 @@ class AuthServiceImpl(
         }.map(TokenResponseDto::toAuthResponse)
     }
 
-    override suspend fun activateAccount(token: String): Result<Unit, NetworkError> {
+    override suspend fun activateAccount(token: String, email: String): Result<Unit, AppError> {
         return safeCall<Unit> {
             httpClient.get(constructUrl("/auth/activate-account")) {
                 contentType(ContentType.Application.Json)
                 url {
                     parameters.append("token", token)
+                    parameters.append("email", email)
                 }
             }
         }.also {
@@ -90,7 +92,7 @@ class AuthServiceImpl(
         }
     }
 
-    override suspend fun resendCode(email: String): Result<Unit, NetworkError> {
+    override suspend fun resendCode(email: String): Result<Unit, AppError> {
         return safeCall<Unit> {
             httpClient.get(constructUrl("/auth/resend-code")) {
                 contentType(ContentType.Application.Json)
@@ -101,7 +103,7 @@ class AuthServiceImpl(
         }
     }
 
-    override suspend fun forgetPassword(email: String): Result<Unit, NetworkError> {
+    override suspend fun forgetPassword(email: String): Result<Unit, AppError> {
         return safeCall<Unit> {
             httpClient.get(constructUrl("/auth/forget-password")) {
                 contentType(ContentType.Application.Json)

@@ -1,5 +1,7 @@
 package com.example.tripapplication.auth.presentation.login
 
+import com.example.tripapplication.core.domain.util.AppError
+
 sealed interface AuthEvent {
     data object LoginSuccess : AuthEvent
     data object RegisterSuccess : AuthEvent
@@ -7,5 +9,5 @@ sealed interface AuthEvent {
     data object ForgetPassSuccess : AuthEvent
     data object ResendCodeSuccess : AuthEvent
 
-    data class Error(val message: String) : AuthEvent
+    data class Error(val error: AppError) : AuthEvent
 }

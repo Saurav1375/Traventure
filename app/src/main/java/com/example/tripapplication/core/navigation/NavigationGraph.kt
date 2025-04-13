@@ -4,12 +4,15 @@ import android.widget.Toast
 import androidx.compose.foundation.layout.Box
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.AccountCircle
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -21,6 +24,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.example.tripapplication.auth.domain.utils.BusinessError
 import com.example.tripapplication.auth.presentation.activate.ActivateScreen
 import com.example.tripapplication.auth.presentation.forgetpass.ForgetPasswordScreen
 import com.example.tripapplication.auth.presentation.forgetpass.components.CustomAlertDialog
@@ -30,19 +34,24 @@ import com.example.tripapplication.auth.presentation.login.AuthViewModel
 import com.example.tripapplication.auth.presentation.login.LoginScreen
 import com.example.tripapplication.auth.presentation.onboarding.OnBoardingScreen
 import com.example.tripapplication.auth.presentation.register.RegisterScreen
+import com.example.tripapplication.core.domain.util.AppError
 import com.example.tripapplication.core.presentation.components.LoadingOverlay
 import com.example.tripapplication.core.presentation.util.ObserveAsEvents
+import com.example.tripapplication.core.presentation.util.toUserMessage
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun NavigationGraph(
     navController: NavHostController,
-    modifier: Modifier = Modifier
+    snackBarHostState: SnackbarHostState,
+    modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
     val authViewModel = koinViewModel<AuthViewModel>()
     val authState = authViewModel.state.collectAsStateWithLifecycle()
+    val scope = rememberCoroutineScope()
     var showPasswordResetDialogue by remember { mutableStateOf(false) }
     var showAccountActivatedDialogue by  remember { mutableStateOf(false) }
     LaunchedEffect(authState.value.email) {
@@ -57,12 +66,12 @@ fun NavigationGraph(
 
     if (showAccountActivatedDialogue) {
         LaunchedEffect(Unit) {
-            delay(2000)
+            delay(8000)
             showAccountActivatedDialogue = false
         }
         CustomAlertDialog(
             onDismissRequest = { showAccountActivatedDialogue = false },
-            title = "Account Activated Successfully",
+            title = "Account Activated",
             description = "Your Account is activated You can now login to your account",
             icon = Icons.Outlined.AccountCircle
         )
@@ -70,26 +79,32 @@ fun NavigationGraph(
     ObserveAsEvents(events = authViewModel.event) { event ->
         when (event) {
             is AuthEvent.Error -> {
-                Toast.makeText(
-                    context,
-                    event.message,
-                    Toast.LENGTH_LONG
-                ).show()
+                scope.launch {
+                    snackBarHostState
+                        .showSnackbar(
+                            message =  event.error.toUserMessage(context),
+                            duration = SnackbarDuration.Short
+                        )
+                }
+                if (event.error is AppError.Business) {
+                    if (event.error.error == BusinessError.ACCOUNT_NOT_VERIFIED) {
+                        navController.navigate(Screen.ActivateAccountScreen.route) {
+                            popUpTo(Screen.LoginScreen.route) {
+                                inclusive = true
+                            }
+                        }
+                    }
+                }
             }
 
             AuthEvent.LoginSuccess -> {
-                Toast.makeText(
-                    context,
-                    "Login Success",
-                    Toast.LENGTH_LONG
-                ).show()
+                navController.navigate(Screen.HomeScreen.route) {
+                    popUpTo(Screen.LoginScreen.route) {
+                        inclusive = true
+                    }
+                }
             }
             AuthEvent.RegisterSuccess -> {
-                Toast.makeText(
-                    context,
-                    "Register Success",
-                    Toast.LENGTH_LONG
-                ).show()
                 navController.navigate(Screen.ActivateAccountScreen.route) {
                     popUpTo(Screen.RegisterScreen.route) {
                         inclusive = true
@@ -98,11 +113,6 @@ fun NavigationGraph(
             }
             AuthEvent.ActivationSuccess -> {
                 showAccountActivatedDialogue = true
-                Toast.makeText(
-                    context,
-                    "Activation Success",
-                    Toast.LENGTH_LONG
-                ).show()
                 navController.navigate(Screen.LoginScreen.route) {
                     popUpTo(Screen.ActivateAccountScreen.route) {
                         inclusive = true
@@ -115,11 +125,13 @@ fun NavigationGraph(
             }
 
             AuthEvent.ResendCodeSuccess -> {
-                Toast.makeText(
-                    context,
-                    "Code Sent",
-                    Toast.LENGTH_LONG
-                ).show()
+                scope.launch {
+                    snackBarHostState
+                        .showSnackbar(
+                            message =  "Activation code resent!",
+                            duration = SnackbarDuration.Short
+                        )
+                }
             }
         }
     }
